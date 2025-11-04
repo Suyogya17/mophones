@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import Login from "./pages/login";
@@ -13,10 +13,10 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
+  // {
+  //   path: "/register",
+  //   element: <RegisterPage />,
+  // },
   {
     path: "/",
     element: <Dashboard />,
