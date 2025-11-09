@@ -1,41 +1,23 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ToastContainer } from "react-toastify"; // Import ToastContainer
-import Login from "./pages/login";
-import Dashboard from "./pages/dashboard";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { AuthProvider } from "@getmocha/users-service/react";
+import HomePage from "../src/pages/Home";
+import ShopPage from "../src/pages/Shop";
+import ComparePage from "../src/pages/Compare";
+import AdminPage from "../src/pages/Admin";
+import AuthCallbackPage from "../src/pages/AuthCallback";
 
-// Create a QueryClient instance
-const queryClient = new QueryClient();
-
-const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  // {
-  //   path: "/register",
-  //   element: <RegisterPage />,
-  // },
-  {
-    path: "/",
-    element: <Dashboard />,
-  },
-]);
-
-function App() {
+export default function App() {
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-        />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/compare" element={<ComparePage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
-
-export default App;
