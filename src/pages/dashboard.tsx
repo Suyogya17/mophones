@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { Phone, ShoppingBag, Star } from "lucide-react";
 import Navbar from "../pages/sidedish/navbar";
 import Carousel from "../pages/sidedish/carousel";
