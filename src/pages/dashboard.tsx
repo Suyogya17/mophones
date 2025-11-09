@@ -1,97 +1,71 @@
+import React from "react";
 import { motion } from "framer-motion";
+import { Phone, ShoppingBag, Star } from "lucide-react";
+import Navbar from "../pages/sidedish/navbar";
+import Carousel from "../pages/sidedish/carousel";
 
-const Button = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <button
-    className={`bg-gradient-to-r from-purple-600 to-purple-400 hover:from-purple-500 hover:to-purple-300 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition ${className}`}
-  >
-    {children}
-  </button>
-);
-
-const Card = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-3xl shadow-lg p-6 border border-purple-200 hover:shadow-2xl transition ${className}`}>
-    {children}
-  </div>
-);
-
-const CardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={className}>{children}</div>
-);
-
-export default function Dashboard() {
-  const trendingPhones = [
-    { name: "iPhone 15 Pro", price: "Rs. 1,50,000" },
-    { name: "iPhone 14 Pro", price: "Rs. 1,20,000" },
-    { name: "iPhone 13", price: "Rs. 90,000" },
-    { name: "iPhone SE", price: "Rs. 60,000" },
-  ];
-
+const LandingPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white text-gray-900 font-sans">
+    <div className="bg-gradient-to-b from-purple-800 via-purple-900 to-black text-white min-h-screen flex flex-col items-center">
+      <Navbar />
+
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-purple-800 via-purple-700 to-purple-600 text-white py-24 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg"
-        >
-          Compare. Trade. Buy.
-        </motion.h1>
-        <p className="max-w-2xl mx-auto text-lg md:text-xl text-purple-200 mb-8 drop-shadow">
-          The smartest way to compare smartphones, check trade-in value, and shop trusted devices.
-        </p>
-        <Button className="text-lg">Start Exploring</Button>
+      <section className="relative w-full flex flex-col items-center justify-center text-center mt-24 mb-10">
+        <div className="w-full max-w-full mx-auto px-4">
+          <Carousel
+            images={[
+              "https://cdn.thewirecutter.com/wp-content/media/2025/09/BG-IPHONE-2048px_TOP_ART_2X1.jpg?width=2048",
+              "https://beloved-brands.com/wp-content/uploads/2021/07/apple-advertising-study-aug-2022-scaled.jpg",
+              "https://images.squarespace-cdn.com/content/v1/57302e3040261d2ef98c91c0/1504757176380-HUXVP37CZWQ9ARBM394S/Screen-Shot-2015-06-25-at-11.01.00-PM-760x418.png?format=1000w"
+            ]}
+          />
+
+        </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-24 max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
-        {[
-          { title: "Compare Phones", desc: "Side-by-side specs, performance, and price insights." },
-          { title: "Trade-In Value", desc: "Get instant estimates for your old devices." },
-          { title: "Buy Devices", desc: "Shop certified new and used smartphones." },
-        ].map((feature, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: idx * 0.15 }}
-          >
-            <Card className="text-center border-purple-300 hover:border-purple-400">
-              <CardContent>
-                <div className="bg-gradient-to-tr from-purple-200 to-purple-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center text-purple-700 font-bold text-xl shadow-inner">
-                  {idx + 1}
-                </div>
-                <h3 className="font-bold text-2xl mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.desc}</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </section>
-
-      {/* Trending Phones Section */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-10 text-center text-purple-800">Trending Phones</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {trendingPhones.map((phone, idx) => (
-            <Card key={idx} className="relative overflow-hidden hover:scale-105 transform transition group">
-              <CardContent className="p-6 text-center">
-                <div className="aspect-square bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl mb-5 flex items-center justify-center text-purple-700 font-bold text-xl shadow-inner">
-                  Image
-                </div>
-                <h4 className="font-bold text-lg mb-1">{phone.name}</h4>
-                <p className="text-purple-600 font-semibold mb-4">{phone.price}</p>
-                <Button className="w-full py-2 rounded-full">View Details</Button>
-
-                {/* Decorative Glowing Circle */}
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-purple-300 rounded-full opacity-30 blur-3xl pointer-events-none"></div>
-                <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-purple-400 rounded-full opacity-20 blur-3xl pointer-events-none"></div>
-              </CardContent>
-            </Card>
-          ))}
+      <section className="w-full bg-white text-purple-800 py-20 rounded-t-[3rem] px-6 mt-10">
+       <h3 className="text-2xl font-bold text-center mb-12">? Why Choose Us</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 max-w-6xl mx-auto">
+           
+          <FeatureCard
+            icon={<Phone className="w-10 h-10 text-purple-600" />}
+            title="Latest Models"
+            desc="Always up-to-date with the newest smartphones."
+          />
+          <FeatureCard
+            icon={<ShoppingBag className="w-10 h-10 text-purple-600" />}
+            title="Easy Shopping"
+            desc="Smooth, fast, and secure checkout process."
+          />
+          <FeatureCard
+            icon={<Star className="w-10 h-10 text-purple-600" />}
+            title="Trusted Reviews"
+            desc="Real customer feedback to guide your purchase."
+          />
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="w-full bg-purple-950 text-center py-6 text-purple-200 mt-auto">
+        <p>&copy; {new Date().getFullYear()} <strong>Mophones</strong>. All rights reserved.</p>
+      </footer>
     </div>
   );
+};
+
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
 }
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, desc }) => (
+  <div className="bg-purple-100 rounded-2xl p-8 text-center shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform">
+    <div className="flex justify-center mb-4">{icon}</div>
+    <h4 className="font-semibold text-lg mb-2">{title}</h4>
+    <p className="text-sm text-purple-700">{desc}</p>
+  </div>
+);
+
+export default LandingPage;
