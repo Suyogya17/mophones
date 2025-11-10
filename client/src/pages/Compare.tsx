@@ -1,223 +1,204 @@
-import { useState } from 'react';
-import { Plus, X, ArrowRight } from 'lucide-react';
-import { usePhones, useComparePhones } from '../hooks/UsePhones';
-import Header from '../components/Header';
-import type { Phone } from '../shared/types';
+import React, { useState } from "react";
+import { X, GitCompare, ChevronDown } from "lucide-react";
+import Header from "../components/Header";
 
-export default function Compare() {
-  const [selectedPhones, setSelectedPhones] = useState<number[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const { phones: allPhones, loading: loadingAll } = usePhones();
-  const { phones: comparePhones, loading: loadingCompare } = useComparePhones(selectedPhones);
+interface Phone {
+  id: string;
+  name: string;
+  image: string;
+  display: string;
+  chip: string;
+  camera: string;
+  battery: string;
+  storage: string;
+  price: string;
+}
 
-  const filteredPhones = allPhones.filter(phone =>
-    phone.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    phone.brand.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+const staticPhones: Phone[] = [
+  {
+    id: "1",
+    name: "iPhone 17 Pro Max",
+    image:
+      "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-pro-model-unselect-gallery-2-202309?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1692893988343",
+    display: '6.9" Super Retina XDR',
+    chip: "A18 Pro Chip",
+    camera: "48MP + 12MP + 12MP",
+    battery: "29 hours video playback",
+    storage: "256GB / 512GB / 1TB",
+    price: "$1,299",
+  },
+  {
+    id: "2",
+    name: "iPhone 16 Pro",
+    image:
+      "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-16-pro-gallery-1?wid=2820&hei=1640&fmt=jpeg&qlt=90&.v=1725038490307",
+    display: '6.7" Super Retina XDR',
+    chip: "A17 Pro Chip",
+    camera: "48MP + 12MP + 12MP",
+    battery: "27 hours video playback",
+    storage: "128GB / 256GB / 512GB",
+    price: "$1,199",
+  },
+  {
+    id: "3",
+    name: "iPhone 15 Pro",
+    image:
+      "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-blue-titanium_AV2?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1692920972564",
+    display: '6.1" Super Retina XDR',
+    chip: "A16 Bionic Chip",
+    camera: "48MP + 12MP + 12MP",
+    battery: "23 hours video playback",
+    storage: "128GB / 256GB / 512GB / 1TB",
+    price: "$999",
+  },
+  {
+    id: "4",
+    name: "iPhone 14",
+    image:
+      "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-14-model-unselect-gallery-1-202209?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1661027784889",
+    display: '6.1" Super Retina XDR',
+    chip: "A15 Bionic Chip",
+    camera: "12MP + 12MP",
+    battery: "20 hours video playback",
+    storage: "128GB / 256GB / 512GB",
+    price: "$799",
+  },
+];
 
-  const addPhoneToCompare = (phoneId: number) => {
-    if (selectedPhones.length < 4 && !selectedPhones.includes(phoneId)) {
-      setSelectedPhones([...selectedPhones, phoneId]);
+const Compare: React.FC = () => {
+  const [selectedPhones, setSelectedPhones] = useState<Phone[]>([]);
+
+  const handleAddPhone = (id: string) => {
+    const phone = staticPhones.find((p) => p.id === id);
+    if (phone && !selectedPhones.find((s) => s.id === id) && selectedPhones.length < 3) {
+      setSelectedPhones([...selectedPhones, phone]);
     }
   };
 
-  const removePhoneFromCompare = (phoneId: number) => {
-    setSelectedPhones(selectedPhones.filter(id => id !== phoneId));
+  const handleRemovePhone = (id: string) => {
+    setSelectedPhones(selectedPhones.filter((p) => p.id !== id));
   };
 
-  const clearComparison = () => {
-    setSelectedPhones([]);
-  };
-
-  const comparisonFeatures = [
-    { key: 'price', label: 'Price', format: (value: any) => `$${value}` },
-    { key: 'display_size', label: 'Display Size' },
-    { key: 'processor', label: 'Processor' },
-    { key: 'ram', label: 'RAM' },
-    { key: 'storage', label: 'Storage' },
-    { key: 'camera_main', label: 'Main Camera' },
-    { key: 'camera_front', label: 'Front Camera' },
-    { key: 'battery', label: 'Battery' },
-    { key: 'operating_system', label: 'OS' },
-    { key: 'weight', label: 'Weight' },
-    { key: 'dimensions', label: 'Dimensions' },
-    { key: 'network', label: 'Network' },
+  const specs = [
+    { key: "display", label: "Display" },
+    { key: "chip", label: "Chipset" },
+    { key: "camera", label: "Camera" },
+    { key: "battery", label: "Battery Life" },
+    { key: "storage", label: "Storage" },
+    { key: "price", label: "Price" },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Compare iPhones</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Select up to 4 iPhones to compare their specifications, features, and prices side by side.
-          </p>
-        </div>
 
-        {/* Selected Phones Counter */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-full px-6 py-3 shadow-lg">
-            <span className="text-sm font-medium text-gray-600">
-              {selectedPhones.length} of 4 phones selected
-            </span>
-            {selectedPhones.length > 0 && (
-              <button
-                onClick={clearComparison}
-                className="ml-4 text-red-600 hover:text-red-700 text-sm font-medium"
-              >
-                Clear All
-              </button>
-            )}
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 text-white py-16 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 flex justify-center items-center gap-3">
+          <GitCompare className="w-8 h-8" /> Compare iPhones
+        </h1>
+        <p className="text-blue-100 max-w-2xl mx-auto">
+          Select up to 3 iPhones to compare their features and specs side by side.
+        </p>
+      </section>
+
+      {/* Compare Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Dropdown */}
+        <div className="bg-white rounded-xl shadow p-6 mb-10">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+            <div className="flex items-center gap-3">
+              <ChevronDown className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-semibold text-gray-800">
+                Select Phones to Compare
+              </h2>
+            </div>
+
+            <select
+              onChange={(e) => handleAddPhone(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500"
+              value=""
+            >
+              <option value="">-- Choose a phone --</option>
+              {staticPhones.map((phone) => (
+                <option key={phone.id} value={phone.id}>
+                  {phone.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {selectedPhones.length === 0 ? (
-          /* Phone Selection */
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="mb-6">
-              <input
-                type="text"
-                placeholder="Search for iPhones to compare..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-              />
-            </div>
-
-            {loadingAll ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4 animate-pulse">
-                    <div className="aspect-square bg-gray-200 rounded-lg mb-3"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+        {/* Comparison Table */}
+        {selectedPhones.length > 0 ? (
+          <div className="overflow-x-auto">
+            <div
+              className="grid gap-6"
+              style={{
+                gridTemplateColumns: `200px repeat(${selectedPhones.length}, minmax(250px, 1fr))`,
+              }}
+            >
+              {/* Spec Labels */}
+              <div className="bg-gray-100 rounded-xl p-4">
+                <div className="h-56 flex items-center justify-center font-semibold text-gray-700">
+                  Specs
+                </div>
+                {specs.map((spec) => (
+                  <div
+                    key={spec.key}
+                    className="py-4 px-2 border-t text-gray-700 font-medium"
+                  >
+                    {spec.label}
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredPhones.map((phone) => (
-                  <div
-                    key={phone.id}
-                    className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
-                    onClick={() => addPhoneToCompare(phone.id)}
-                  >
-                    <div className="aspect-square mb-3 relative overflow-hidden rounded-lg bg-gray-50">
-                      <img
-                        src={phone.image_url || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300'}
-                        alt={phone.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      />
-                      <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                        <Plus className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">
+
+              {/* Selected Phones */}
+              {selectedPhones.map((phone) => (
+                <div
+                  key={phone.id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden"
+                >
+                  {/* Header */}
+                  <div className="relative p-4 border-b">
+                    <button
+                      onClick={() => handleRemovePhone(phone.id)}
+                      className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                    <img
+                      src={phone.image}
+                      alt={phone.name}
+                      className="w-32 h-32 object-contain mx-auto mb-2"
+                    />
+                    <h3 className="text-lg font-semibold text-center text-gray-800">
                       {phone.name}
                     </h3>
-                    <p className="text-blue-600 font-bold text-lg">${phone.price}</p>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Comparison Table */
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            {loadingCompare ? (
-              <div className="p-8 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="text-gray-600 mt-4">Loading comparison...</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-600 w-48">
-                        Feature
-                      </th>
-                      {comparePhones.map((phone) => (
-                        <th key={phone.id} className="px-6 py-4 text-center min-w-64">
-                          <div className="flex flex-col items-center">
-                            <div className="relative mb-3">
-                              <img
-                                src={phone.image_url || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200'}
-                                alt={phone.name}
-                                className="w-20 h-20 object-cover rounded-lg"
-                              />
-                              <button
-                                onClick={() => removePhoneFromCompare(phone.id)}
-                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                            <h3 className="font-semibold text-gray-900 text-sm text-center">
-                              {phone.name}
-                            </h3>
-                          </div>
-                        </th>
-                      ))}
-                      {selectedPhones.length < 4 && (
-                        <th className="px-6 py-4 text-center min-w-64">
-                          <button
-                            onClick={() => setSelectedPhones([])}
-                            className="flex flex-col items-center justify-center h-32 w-20 mx-auto border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 group"
-                          >
-                            <Plus className="w-8 h-8 text-gray-400 group-hover:text-blue-500" />
-                            <span className="text-xs text-gray-500 group-hover:text-blue-500 mt-2">
-                              Add Phone
-                            </span>
-                          </button>
-                        </th>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comparisonFeatures.map((feature, index) => (
-                      <tr key={feature.key} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                        <td className="px-6 py-4 font-medium text-gray-900">
-                          {feature.label}
-                        </td>
-                        {comparePhones.map((phone) => (
-                          <td key={phone.id} className="px-6 py-4 text-center text-gray-700">
-                            {feature.format 
-                              ? feature.format(phone[feature.key as keyof Phone])
-                              : phone[feature.key as keyof Phone] || 'N/A'
-                            }
-                          </td>
-                        ))}
-                        {selectedPhones.length < 4 && (
-                          <td className="px-6 py-4 text-center text-gray-400">-</td>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
 
-            {/* Action Buttons */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  onClick={() => setSelectedPhones([])}
-                  className="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                >
-                  Add More Phones
-                </button>
-                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
-                  <span>View Detailed Comparison</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+                  {/* Specs */}
+                  {specs.map((spec) => (
+                    <div
+                      key={spec.key}
+                      className="py-4 px-3 border-t text-center text-gray-600"
+                    >
+                      {phone[spec.key as keyof Phone]}
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
+        ) : (
+          <div className="text-center py-20 text-gray-500">
+            <GitCompare className="w-10 h-10 mx-auto mb-4 text-gray-400" />
+            <p>Select phones from the dropdown above to start comparing.</p>
+          </div>
         )}
-      </div>
+      </section>
     </div>
   );
-}
+};
+
+export default Compare;
